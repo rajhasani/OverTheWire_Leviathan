@@ -1,4 +1,4 @@
-For all of these levels, OverTheWire gives us no instructions or prompts. This, in my opinion, is better, as we're forced to explore the filesystem on our own.
+For all of these levels, OverTheWire gives us no instructions or prompts, aside from the fact that the passwords for the levels are located in /etc/leviathan_pass/, much like it was with Bandit. This, in my opinion, is better, as we're forced to explore the filesystem on our own.
 
 Let's first start be taking a look at the home directory:
 
