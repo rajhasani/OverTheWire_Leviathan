@@ -32,7 +32,7 @@ puts("You cant have that file..."You cant have that file...
 +++ exited (status 1) +++
 ```
 
-Strange; it doesn't seem to be calling any libraries, rather just automatically printing that I don't have access. It doesn't make sense that this would be the case for all files, otherwise the setuid binary would essentially be useless. Let's try with another file:
+So it's using the `access()` function to determine whether I have read permissions for the referenced file. Since this returned a -1 in the `ltrace`, this fails, and then resorts to `puts()` to print that I don't have access. Let's try running this again with another file, one that we should definitely have read-access to:
 
 **`leviathan2@gibson:~$ ltrace ./printfile /etc/leviathan_pass/leviathan2`**  
 ```
