@@ -1,11 +1,8 @@
 **`leviathan3@gibson:~$ ls`**  
 *`level3`*  
 
-Another setuid binary. As before, let's execute it, and then check the library calls:
+Another setuid binary. As before, let's check the library calls:
 
-**`leviathan3@gibson:~$ ./level3`**  
-*`Enter the password> 12345`*  
-*`bzzzzzzzzap. WRONG`*  
 **`leviathan3@gibson:~$ ltrace ./level3`**  
 ```
 __libc_start_main(0x80492bf, 1, 0xffffd5f4, 0 <unfinished ...>
