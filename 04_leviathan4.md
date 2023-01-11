@@ -16,7 +16,7 @@ puts("bzzzzzzzzap. WRONG"bzzzzzzzzap. WRONG
 +++ exited (status 0) +++
 ```
 
-So after it prompts us for a password, it runs another string comparison using `strcmp()`, which looks very similar to the solution for leviathan2. The `/n` is regex for a new line, so this effectively can be stripped:
+So after it prompts us for a password, it runs another string comparison using `strcmp()`, which looks very similar to the solution for leviathan2. The `\n` is regex for a new line, so this effectively can be stripped:
 
 **`leviathan3@gibson:~$ ./level3`**  
 *`Enter the password> snlprintf`*  
