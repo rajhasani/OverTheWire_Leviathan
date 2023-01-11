@@ -55,7 +55,7 @@ Here we go. There are several things going on here:
 * The `setreuid()` function sets both the real and effective UID to leviathan3
 * The `system()` function calls the concatenated string built earlier and executes
 
-As stated above, any "filename" (that we have read permissions for) that is passed to the concatenated string will be executed by `system()`, AFTER `setreuid()` sets the real/effective UID to leviathan3. We can therefore fool the `system()` function into accepting a filename with a command appended to it, since there doesn't seem to be any proper input validation in place:
+As stated above, any "filename" (that we have read permissions for) that is passed to the concatenated string will be executed by `system()`, AFTER `setreuid()` sets the real/effective UID to leviathan3. We can therefore fool the `system()` function into accepting a filename with a command appended to it, otherwise known as a **command injection vulnerability**:
 
 **`leviathan2@gibson:~$ mkdir /tmp/rajh`**  
 **`leviathan2@gibson:~$ touch "/tmp/rajh/test;bash -p"`**  
